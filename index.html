@@ -986,6 +986,9 @@
                         <div class="conn-dot contract"></div> 📄 品顺 ↔ 西江：签署《委托加工分包协议》
                     </div>
                     <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 顺好食 ↔ 大水牛：签署《原料采购协议》（甲供料依据）
+                    </div>
+                    <div class="conn-item">
                         <div class="conn-dot goods"></div> 🥛 大水牛 → 西江：冷链运输水牛奶（甲供料）
                     </div>
                     <div class="conn-item">
@@ -996,6 +999,9 @@
                     </div>
                     <div class="conn-item">
                         <div class="conn-dot money"></div> 💰 品顺 → 西江：合理加工费
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot money"></div> 💰 顺好食 → 大水牛：原料采购款
                     </div>
                 </div>
             </div>
@@ -1049,6 +1055,21 @@
                     </div>
                 </div>
             </div>
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">合同 ③</span> 原料采购协议（甲供料依据）</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食</div>
+                        <div class="flow-label">采购方 / 甲供料指令方</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-3">大水牛供应链</div>
+                        <div class="flow-label">原料供应方（甲方管理基金旗下子公司）</div>
+                    </div>
+                </div>
+                <div class="insight-box">📌 顺好食向大水牛下达调拨指令，将福润/恩平/遂溪牧场的生水牛奶冷链运输至西江乳业工厂（此为"甲供料"环节的法律依据）</div>
+            </div>
         </div>
 
         <!-- LAYERED VIEW: GOODS -->
@@ -1097,19 +1118,21 @@
         <div class="layer-group">
             <div class="layer-card money-layer">
                 <h4><span class="layer-badge money">资金流</span> 关键：IP费及技术研发费隐形化处理</h4>
-                <div class="flow-steps">
-                    <div class="flow-group">
+                <div class="flow-steps" style="flex-direction: column; align-items: flex-start; gap: 12px;">
+                    <div class="flow-steps">
                         <div class="flow-node highlight">顺好食</div>
-                    </div>
-                    <div class="flow-arrow money-arrow">→ 💰大额货款 →</div>
-                    <div class="flow-group">
+                        <div class="flow-arrow money-arrow">→ 💰大额货款 →</div>
                         <div class="flow-node highlight-2">品顺</div>
-                        <div class="flow-label">确认全额营收<br />截留IP差价及技术研发费</div>
-                    </div>
-                    <div class="flow-arrow money-arrow">→ 合理加工费 →</div>
-                    <div class="flow-group">
+                        <div class="flow-arrow money-arrow">→ 合理加工费 →</div>
                         <div class="flow-node highlight-green">西江乳业</div>
                     </div>
+                    <div style="font-size:0.72rem; color:var(--text-dim); padding-left:4px;">↑ 品顺确认全额营收，截留IP差价及技术研发费</div>
+                    <div class="flow-steps">
+                        <div class="flow-node highlight">顺好食</div>
+                        <div class="flow-arrow money-arrow">→ 原料采购款 →</div>
+                        <div class="flow-node highlight-3">大水牛供应链</div>
+                    </div>
+                    <div style="font-size:0.72rem; color:var(--text-dim); padding-left:4px;">↑ 甲供料对应的原料采购资金流（甲方管理基金旗下子公司间交易）</div>
                 </div>
                 <div class="advantage-callout">
                     <span class="adv-icon">✅</span>
@@ -1395,6 +1418,36 @@
                 </div>
                 <div class="insight-box purple">📌 约定利润分配比例：顺好食占大头（运营），品顺占小头（IP + 技术研发）</div>
             </div>
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">供应链合同 ①</span> 生乳采购合同</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">联营体（品顺-顺好食）</div>
+                        <div class="flow-label">采购方</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-3">大水牛供应链</div>
+                        <div class="flow-label">原料供应方</div>
+                    </div>
+                </div>
+                <div class="insight-box">📌 以联营体名义统一向大水牛供应链采购福润/恩平/遂溪牧场奶源</div>
+            </div>
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">供应链合同 ②</span> 委托加工合同</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">联营体（品顺-顺好食）</div>
+                        <div class="flow-label">委托方</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-green">西江乳业</div>
+                        <div class="flow-label">代工方</div>
+                    </div>
+                </div>
+                <div class="insight-box">📌 以联营体名义统一委托西江乳业进行双皮奶/水牛乳酪的OEM代工生产</div>
+            </div>
         </div>
 
         <!-- LAYERED VIEW: GOODS -->
@@ -1514,13 +1567,46 @@
 
             <!-- Row: Contract Count -->
             <div class="compare-cell dim-label">合同数量</div>
-            <div class="compare-cell">2份<br /><small style="color:var(--text-dim)">ODM类比合同 + 分包协议</small></div>
+            <div class="compare-cell">3份<br /><small style="color:var(--text-dim)">ODM类比合同 + 分包协议 + 原料采购协议</small></div>
             <div class="compare-cell">3份<br /><small style="color:var(--text-dim)">许可协议 + OEM + 采购</small></div>
-            <div class="compare-cell">1份（核心）+ 外部合同<br /><small style="color:var(--text-dim)">联营协议 + 供应链合同</small></div>
+            <div class="compare-cell">3份<br /><small style="color:var(--text-dim)">联营协议 + 生乳采购合同 + 委托加工合同</small></div>
+
+            <!-- Row: Contract & Signing Parties -->
+            <div class="compare-cell dim-label">合同与签约主体</div>
+            <div class="compare-cell">
+                <div style="font-size:0.78rem; line-height:1.8;">
+                    <strong style="color:var(--contract-color);">合同①</strong> 顺好食 ↔ 品顺<br />
+                    <small style="color:var(--text-dim);">《腊味ODM类比成品委托生产合同》</small><br />
+                    <strong style="color:var(--contract-color);">合同②</strong> 品顺 ↔ 西江乳业<br />
+                    <small style="color:var(--text-dim);">《委托加工分包协议》</small><br />
+                    <strong style="color:var(--contract-color);">合同③</strong> 顺好食 ↔ 大水牛<br />
+                    <small style="color:var(--text-dim);">《原料采购协议》（甲供料依据）</small>
+                </div>
+            </div>
+            <div class="compare-cell">
+                <div style="font-size:0.78rem; line-height:1.8;">
+                    <strong style="color:var(--contract-color);">合同①</strong> 顺好食 ↔ 品顺<br />
+                    <small style="color:var(--text-dim);">《品牌与技术许可协议》</small><br />
+                    <strong style="color:var(--contract-color);">合同②</strong> 顺好食 ↔ 西江乳业<br />
+                    <small style="color:var(--text-dim);">《OEM代工合同》</small><br />
+                    <strong style="color:var(--contract-color);">合同③</strong> 顺好食 ↔ 大水牛<br />
+                    <small style="color:var(--text-dim);">《生乳采购合同》</small>
+                </div>
+            </div>
+            <div class="compare-cell">
+                <div style="font-size:0.78rem; line-height:1.8;">
+                    <strong style="color:var(--contract-color);">合同①</strong> 顺好食 ↔ 品顺<br />
+                    <small style="color:var(--text-dim);">《联营合作协议》</small><br />
+                    <strong style="color:var(--contract-color);">合同②</strong> 联营体 ↔ 大水牛<br />
+                    <small style="color:var(--text-dim);">《生乳采购合同》</small><br />
+                    <strong style="color:var(--contract-color);">合同③</strong> 联营体 ↔ 西江乳业<br />
+                    <small style="color:var(--text-dim);">《委托加工合同》</small>
+                </div>
+            </div>
 
             <!-- Row: Money Flow -->
             <div class="compare-cell dim-label">资金流向</div>
-            <div class="compare-cell">顺好食→品顺（大额）→西江（合理加工费）<br /><strong>链式传递</strong></div>
+            <div class="compare-cell">顺好食→品顺（大额）→西江（合理加工费）<br />顺好食→大水牛（原料采购款）<br /><strong>链式传递 + 甲供料支线</strong></div>
             <div class="compare-cell">
                 <div class="star-flow">
                     <div class="star-center">顺好食（星型中心）</div>
