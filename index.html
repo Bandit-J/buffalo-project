@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水牛奶产业协作 · 三方案交易架构</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Playfair+Display:wght@700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* === LOCK SCREEN OVERLAY === */
+        #lockScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(245, 243, 239, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #lockContent {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 360px;
+        }
+
+        .lock-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .lock-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #2d2a26;
+        }
+
+        .lock-input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #e2ddd5;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .lock-input:focus {
+            border-color: #c8892e;
+        }
+
+        .lock-btn {
+            width: 100%;
+            padding: 12px;
+            background: #c8892e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .lock-btn:hover {
+            background: #b07625;
+        }
+
+        .err-msg {
+            color: #c0392b;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            min-height: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* === MAIN CONTENT (Hidden initially) === */
+        body.locked {
+            overflow: hidden;
+        }
+
+        /* === ORIGINAL STYLES === */
+        :root {
+            --bg: #f5f3ef;
+            --bg-card: #ffffff;
+            --bg-card-hover: #fafaf8;
+            --border: #e2ddd5;
+            --text: #2d2a26;
+            --text-muted: #6b6560;
+            --text-dim: #9b958e;
+            --accent-1: #c8892e;
+            --accent-1-dim: rgba(200, 137, 46, 0.10);
+            --accent-1-border: rgba(200, 137, 46, 0.35);
+            --accent-2: #3872b8;
+            --accent-2-dim: rgba(56, 114, 184, 0.08);
+            --accent-2-border: rgba(56, 114, 184, 0.35);
+            --accent-3: #7c5cba;
+            --accent-3-dim: rgba(124, 92, 186, 0.08);
+            --accent-3-border: rgba(124, 92, 186, 0.35);
+            --green: #2a8a68;
+            --green-dim: rgba(42, 138, 104, 0.08);
+            --green-border: rgba(42, 138, 104, 0.35);
+            --red: #c0392b;
+            --red-dim: rgba(192, 57, 43, 0.06);
+            --orange: #d4790e;
+            --contract-color: #3872b8;
+            --goods-color: #2a8a68;
+            --money-color: #c8892e;
+            --jv-color: #9b59b6;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* === HEADER === */
+        .hero {
+            position: relative;
+            padding: 56px 40px 36px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(200, 137, 46, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(56, 114, 184, 0.04) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--accent-1);
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .hero .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* === TAB NAVIGATION === */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 40px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 10;
+        }
+
+        .tab-btn {
+            padding: 11px 26px;
+            border: 1.5px solid var(--border);
+            border-radius: 100px;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            white-space: nowrap;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn:hover {
+            border-color: var(--text-dim);
+            color: var(--text);
+            background: var(--bg-card-hover);
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .tab-btn[data-tab="1"].active {
+            border-color: var(--accent-1);
+            background: var(--accent-1);
+            box-shadow: 0 2px 12px rgba(200, 137, 46, 0.25);
+        }
+
+        .tab-btn[data-tab="2"].active {
+            border-color: var(--accent-2);
+            background: var(--accent-2);
+            box-shadow: 0 2px 12px rgba(56, 114, 184, 0.25);
+        }
+
+        .tab-btn[data-tab="3"].active {
+            border-color: var(--accent-3);
+            background: var(--accent-3);
+            box-shadow: 0 2px 12px rgba(124, 92, 186, 0.25);
+        }
+
+        .tab-btn[data-tab="compare"].active {
+            border-color: var(--green);
+            background: var(--green);
+            box-shadow: 0 2px 12px rgba(42, 138, 104, 0.25);
+        }
+
+        /* === CONTENT PANELS === */
+        .tab-content {
+            display: none;
+            animation: fadeSlideIn 0.4s ease;
+            padding: 0 40px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === SCHEME HEADER === */
+        .scheme-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 32px;
+            padding: 26px 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+        }
+
+        .scheme-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .scheme-header[data-scheme="1"] .scheme-number {
+            color: var(--accent-1);
+        }
+
+        .scheme-header[data-scheme="2"] .scheme-number {
+            color: var(--accent-2);
+        }
+
+        .scheme-header[data-scheme="3"] .scheme-number {
+            color: var(--accent-3);
+        }
+
+        .scheme-meta h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .scheme-meta .tagline {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .scheme-meta .core-logic {
+            margin-top: 10px;
+            font-size: 0.86rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* === SECTION TITLES === */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 32px 0 18px;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .section-title .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .section-title .icon.contract {
+            background: rgba(56, 114, 184, 0.1);
+        }
+
+        .section-title .icon.goods {
+            background: rgba(42, 138, 104, 0.1);
+        }
+
+        .section-title .icon.money {
+            background: rgba(200, 137, 46, 0.1);
+        }
+
+        /* === ARCHITECTURE DIAGRAM === */
+        .arch-diagram {
+            padding: 28px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .arch-canvas {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .arch-entities {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .arch-entity {
+            text-align: center;
+            padding: 18px 14px;
+            border-radius: var(--radius);
+            border: 2px solid;
+            min-width: 140px;
+            max-width: 200px;
+            flex: 1;
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: #fff;
+        }
+
+        .arch-entity:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .arch-entity .emoji {
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .arch-entity .ent-name {
+            font-weight: 700;
+            font-size: 0.92rem;
+            margin-bottom: 2px;
+        }
+
+        .arch-entity .ent-role {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .arch-entity.e-shs {
+            border-color: var(--accent-1-border);
+            background: var(--accent-1-dim);
+        }
+
+        .arch-entity.e-ps {
+            border-color: var(--accent-2-border);
+            background: var(--accent-2-dim);
+        }
+
+        .arch-entity.e-xj {
+            border-color: var(--green-border);
+            background: var(--green-dim);
+        }
+
+        .arch-entity.e-dsn {
+            border-color: var(--accent-3-border);
+            background: var(--accent-3-dim);
+        }
+
+        .arch-entity.e-jv {
+            border-color: rgba(155, 89, 182, 0.35);
+            background: rgba(155, 89, 182, 0.08);
+        }
+
+        /* Connections list */
+        .connections-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .conn-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            font-size: 0.8rem;
+            border: 1px solid var(--border);
+        }
+
+        .conn-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .conn-dot.contract {
+            background: var(--contract-color);
+        }
+
+        .conn-dot.goods {
+            background: var(--goods-color);
+        }
+
+        .conn-dot.money {
+            background: var(--money-color);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 24px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .legend-line {
+            width: 28px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .legend-line.contract {
+            background: var(--contract-color);
+        }
+
+        .legend-line.goods {
+            background: var(--goods-color);
+        }
+
+        .legend-line.dashed {
+            background: none;
+            border-top: 2px dashed var(--money-color);
+            height: 0;
+            margin-top: 1px;
+        }
+
+        /* === LAYER CARDS === */
+        .layer-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .layer-card {
+            padding: 22px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .layer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .layer-card.contract-layer::before {
+            background: var(--contract-color);
+        }
+
+        .layer-card.goods-layer::before {
+            background: var(--goods-color);
+        }
+
+        .layer-card.money-layer::before {
+            background: var(--money-color);
+        }
+
+        .layer-card h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .layer-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .layer-badge.contract {
+            background: rgba(56, 114, 184, 0.1);
+            color: var(--contract-color);
+        }
+
+        .layer-badge.goods {
+            background: rgba(42, 138, 104, 0.1);
+            color: var(--goods-color);
+        }
+
+        .layer-badge.money {
+            background: rgba(200, 137, 46, 0.1);
+            color: var(--money-color);
+        }
+
+        /* === FLOW STEPS === */
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex-wrap: wrap;
+            padding: 4px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .flow-node {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            transition: background 0.2s;
+        }
+
+        .flow-node:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .flow-node.highlight {
+            border-color: var(--accent-1-border);
+            color: var(--accent-1);
+        }
+
+        .flow-node.highlight-2 {
+            border-color: var(--accent-2-border);
+            color: var(--accent-2);
+        }
+
+        .flow-node.highlight-3 {
+            border-color: var(--accent-3-border);
+            color: var(--accent-3);
+        }
+
+        .flow-node.highlight-green {
+            border-color: var(--green-border);
+            color: var(--green);
+        }
+
+        .flow-arrow {
+            color: var(--text-dim);
+            font-size: 1rem;
+            padding: 0 6px;
+            flex-shrink: 0;
+        }
+
+        .flow-arrow.contract-arrow {
+            color: var(--contract-color);
+        }
+
+        .flow-arrow.goods-arrow {
+            color: var(--goods-color);
+        }
+
+        .flow-arrow.money-arrow {
+            color: var(--money-color);
+        }
+
+        .flow-label {
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            text-align: center;
+            margin: -2px 0 0;
+            display: block;
+        }
+
+        .flow-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        /* === CALLOUT BOXES === */
+        .risk-callout {
+            margin-top: 14px;
+            padding: 13px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(192, 57, 43, 0.2);
+            background: var(--red-dim);
+            font-size: 0.82rem;
+            color: var(--red);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .risk-callout .risk-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .advantage-callout {
+            margin-top: 14px;
+            padding: 13px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(42, 138, 104, 0.2);
+            background: var(--green-dim);
+            font-size: 0.82rem;
+            color: var(--green);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .advantage-callout .adv-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .insight-box {
+            margin-top: 14px;
+            padding: 13px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(200, 137, 46, 0.2);
+            background: rgba(200, 137, 46, 0.05);
+            font-size: 0.82rem;
+            color: var(--accent-1);
+        }
+
+        .insight-box.blue {
+            border-color: rgba(56, 114, 184, 0.2);
+            background: rgba(56, 114, 184, 0.04);
+            color: var(--accent-2);
+        }
+
+        .insight-box.purple {
+            border-color: rgba(124, 92, 186, 0.2);
+            background: rgba(124, 92, 186, 0.04);
+            color: var(--accent-3);
+        }
+
+        /* === COMPARISON TABLE === */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 180px 1fr 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .compare-cell {
+            padding: 15px 16px;
+            background: var(--bg-card);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+
+        .compare-cell.header {
+            background: var(--bg);
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-align: center;
+        }
+
+        .compare-cell.header-1 {
+            color: var(--accent-1);
+            border-bottom: 2px solid var(--accent-1);
+        }
+
+        .compare-cell.header-2 {
+            color: var(--accent-2);
+            border-bottom: 2px solid var(--accent-2);
+        }
+
+        .compare-cell.header-3 {
+            color: var(--accent-3);
+            border-bottom: 2px solid var(--accent-3);
+        }
+
+        .compare-cell.dim-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            border-right: 2px solid var(--border);
+            background: var(--bg);
+        }
+
+        .compare-cell .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .tag.low {
+            background: rgba(42, 138, 104, 0.1);
+            color: var(--green);
+        }
+
+        .tag.mid {
+            background: rgba(200, 137, 46, 0.1);
+            color: var(--accent-1);
+        }
+
+        .tag.high {
+            background: rgba(192, 57, 43, 0.1);
+            color: var(--red);
+        }
+
+        /* Star layout for scheme 2 comparison cell */
+        .star-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.78rem;
+        }
+
+        .star-center {
+            font-weight: 700;
+            color: var(--accent-1);
+            margin-bottom: 2px;
+        }
+
+        .star-branches {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .star-branch {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+        }
+
+        /* === RECOMMENDATION BANNER === */
+        .recommendation {
+            margin-top: 36px;
+            padding: 26px 28px;
+            border-radius: var(--radius);
+            border: 1px solid var(--accent-1-border);
+            background: var(--accent-1-dim);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .recommendation .rec-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .recommendation h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--accent-1);
+        }
+
+        .recommendation p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 900px) {
+            .hero {
+                padding: 36px 20px 24px;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .tab-nav {
+                padding: 0 16px;
+                gap: 6px;
+            }
+
+            .tab-btn {
+                padding: 9px 16px;
+                font-size: 0.82rem;
+            }
+
+            .tab-content {
+                padding: 0 16px 40px;
+            }
+
+            .compare-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                background: transparent;
+                border: none;
+            }
+
+            .compare-cell {
+                border-radius: var(--radius-sm);
+                border: 1px solid var(--border);
+            }
+
+            .compare-cell.dim-label {
+                border-right: none;
+            }
+
+            .scheme-header {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body class="locked">
+
+    <!-- LOCK SCREEN -->
+    <div id="lockScreen">
+        <div id="lockContent">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-title">私密文件 · 访问保护</div>
+            <div style="color:#666; font-size:0.9rem; margin-bottom:10px;">请输入访问密码解锁</div>
+            <input type="password" id="passwordInput" class="lock-input" placeholder="输入访问密码" autofocus>
+            <button class="lock-btn" onclick="checkPassword()">立即查看</button>
+            <div id="errMsg" class="err-msg">密码错误，请重试</div>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>水牛奶产业协作 · 交易架构方案</h1>
+        <div class="subtitle">顺好食 × 品顺 × 西江乳业 × 大水牛供应链</div>
+    </div>
+
+    <!-- TAB NAVIGATION -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="1" onclick="switchTab('1')">方案一 · 总包甲供料</button>
+        <button class="tab-btn" data-tab="2" onclick="switchTab('2')">方案二 · 品牌授权直采</button>
+        <button class="tab-btn" data-tab="3" onclick="switchTab('3')">方案三 · 联合体销售</button>
+        <button class="tab-btn" data-tab="compare" onclick="switchTab('compare')">📊 三方案对比</button>
+    </div>
+
+    <!-- ==================== SCHEME 1 ==================== -->
+    <div class="tab-content active" id="tab-1">
+        <div class="scheme-header" data-scheme="1">
+            <div class="scheme-number">01</div>
+            <div class="scheme-meta">
+                <h2>总包 + 甲供料模式</h2>
+                <div class="tagline">总包整合，甲供料锁定供应链</div>
+                <div class="core-logic">顺好食向品顺（国资）下达总包订单，品顺名义总包、分包给西江，合同约定使用大水牛原料。IP授权费及技术研发费隐形包含在成品采购价中，不单独支付。</div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE OVERVIEW -->
+        <div class="section-title">
+            <div class="icon contract">🏗️</div> 交易架构总览
+        </div>
+        <div class="arch-diagram">
+            <div class="arch-canvas">
+                <div class="arch-entities">
+                    <div class="arch-entity e-shs">
+                        <span class="emoji">🎯</span>
+                        <div class="ent-name">顺好食</div>
+                        <div class="ent-role">甲方 · 发起方</div>
+                    </div>
+                    <div class="arch-entity e-ps">
+                        <span class="emoji">🏛️</span>
+                        <div class="ent-name">品顺（国资）</div>
+                        <div class="ent-role">乙方 · 名义总包 / IP方</div>
+                    </div>
+                    <div class="arch-entity e-xj">
+                        <span class="emoji">🏭</span>
+                        <div class="ent-name">西江乳业</div>
+                        <div class="ent-role">丙方 · 分包工厂</div>
+                    </div>
+                    <div class="arch-entity e-dsn">
+                        <span class="emoji">🐃</span>
+                        <div class="ent-name">大水牛供应链</div>
+                        <div class="ent-role">原料方 · 甲方管理基金旗下子公司</div>
+                    </div>
+                </div>
+                <div class="connections-list">
+                    <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 顺好食 ↔ 品顺：签署《腊味ODM类比成品委托生产合同》
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 品顺 ↔ 西江：签署《委托加工分包协议》
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot goods"></div> 🥛 大水牛 → 西江：冷链运输水牛奶（甲供料）
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot goods"></div> 📦 西江 → 顺好食：成品双皮奶交付
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot money"></div> 💰 顺好食 → 品顺：大额货款（含加工费 + IP溢价 + 技术研发费）
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot money"></div> 💰 品顺 → 西江：合理加工费
+                    </div>
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-line contract"></div> 合同关系
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line goods"></div> 实物流
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line dashed"></div> 资金流
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: CONTRACT -->
+        <div class="section-title">
+            <div class="icon contract">📋</div> 合同层
+        </div>
+        <div class="layer-group">
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">合同 ①</span> 腊味ODM类比成品委托生产合同</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食</div>
+                        <div class="flow-label">甲方</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-2">品顺</div>
+                        <div class="flow-label">乙方·总包</div>
+                    </div>
+                </div>
+                <div class="insight-box">📌 合同约定：品顺负责交付品牌双皮奶成品，必须使用大水牛供应链公司提供的原料，或与恒天然基金同等养殖规范要求牧场所产出的可溯源高质量牛奶（甲供料条款）
+                </div>
+                <div class="insight-box blue" style="margin-top:8px;">📌
+                    奶源标准：使用的牛奶必须与本项目中的福润牧场、恩平牧场等保持同一养殖标准（Standard），当核心牧场奶源供不应求时，允许采用符合同等养殖规范的可溯源高质量奶源</div>
+            </div>
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">合同 ②</span> 委托加工分包协议</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight-2">品顺</div>
+                        <div class="flow-label">发包方</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-green">西江乳业</div>
+                        <div class="flow-label">分包方</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: GOODS -->
+        <div class="section-title">
+            <div class="icon goods">🚚</div> 物流层（实物流向）
+        </div>
+        <div class="layer-group">
+            <div class="layer-card goods-layer">
+                <h4><span class="layer-badge goods">原料流</span> 水牛奶冷链运输</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight-3">福润/恩平/遂溪牧场</div>
+                    </div>
+                    <div class="flow-arrow goods-arrow">→</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-3">大水牛供应链</div>
+                        <div class="flow-label">调拨指令</div>
+                    </div>
+                    <div class="flow-arrow goods-arrow">→</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-green">西江乳业工厂</div>
+                        <div class="flow-label">甲供料入库</div>
+                    </div>
+                </div>
+            </div>
+            <div class="layer-card goods-layer">
+                <h4><span class="layer-badge goods">成品流</span> 双皮奶 / 水牛乳酪交付</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight-green">西江乳业</div>
+                        <div class="flow-label">生产加工</div>
+                    </div>
+                    <div class="flow-arrow goods-arrow">→</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食仓库</div>
+                        <div class="flow-label">验收&amp;销售</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: MONEY -->
+        <div class="section-title">
+            <div class="icon money">💰</div> 资金层（资金流向）
+        </div>
+        <div class="layer-group">
+            <div class="layer-card money-layer">
+                <h4><span class="layer-badge money">资金流</span> 关键：IP费及技术研发费隐形化处理</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食</div>
+                    </div>
+                    <div class="flow-arrow money-arrow">→ 💰大额货款 →</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-2">品顺</div>
+                        <div class="flow-label">确认全额营收<br />截留IP差价及技术研发费</div>
+                    </div>
+                    <div class="flow-arrow money-arrow">→ 合理加工费 →</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-green">西江乳业</div>
+                    </div>
+                </div>
+                <div class="advantage-callout">
+                    <span class="adv-icon">✅</span>
+                    <div><strong>核心优势：</strong>IP授权费以及技术研发费不单独列支，隐形包含在成品采购单价中。品顺开具全额增值税专票，国资营收流水有保障，同时规避了IP定价的敏感性。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCHEME 2 ==================== -->
+    <div class="tab-content" id="tab-2">
+        <div class="scheme-header" data-scheme="2">
+            <div class="scheme-number">02</div>
+            <div class="scheme-meta">
+                <h2>品牌授权 + 直采模式</h2>
+                <div class="tagline">"三权分立，各自为政"</div>
+                <div class="core-logic">顺好食处于绝对中心，分别向品顺购买品牌授权及技术研发服务、向大水牛购买原料、向西江购买加工服务。三条交易线独立运行，资金流向完全透明。</div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE OVERVIEW -->
+        <div class="section-title">
+            <div class="icon contract">🏗️</div> 交易架构总览（星型结构）
+        </div>
+        <div class="arch-diagram">
+            <div class="arch-canvas">
+                <div class="arch-entities">
+                    <div class="arch-entity e-ps">
+                        <span class="emoji">🏛️</span>
+                        <div class="ent-name">品顺</div>
+                        <div class="ent-role">IP持有方</div>
+                    </div>
+                    <div class="arch-entity e-shs" style="order: 2;">
+                        <span class="emoji">🎯</span>
+                        <div class="ent-name">顺好食</div>
+                        <div class="ent-role">核心组局者 · 星型中心</div>
+                    </div>
+                    <div class="arch-entity e-xj" style="order: 3;">
+                        <span class="emoji">🏭</span>
+                        <div class="ent-name">西江乳业</div>
+                        <div class="ent-role">OEM工厂</div>
+                    </div>
+                    <div class="arch-entity e-dsn" style="order: 4;">
+                        <span class="emoji">🐃</span>
+                        <div class="ent-name">大水牛供应链</div>
+                        <div class="ent-role">原料方 · 甲方管理基金旗下子公司</div>
+                    </div>
+                </div>
+                <div class="connections-list">
+                    <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 IP线：顺好食 ↔ 品顺《品牌与技术许可协议》
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 加工线：顺好食 ↔ 西江《OEM代工合同》
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 原料线：顺好食 ↔ 大水牛《生乳采购合同》
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot goods"></div> 🥛 大水牛 → 西江：奶源直供工厂
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot goods"></div> 📦 西江 → 顺好食：成品交付
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot money"></div> 💰 顺好食 → 品顺：品牌授权费及技术研发费（显性支付）
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot money"></div> 💰 顺好食 → 西江：加工费
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot money"></div> 💰 顺好食 → 大水牛：原料费
+                    </div>
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-line contract"></div> 合同关系
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line goods"></div> 实物流
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line dashed"></div> 资金流
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: CONTRACT -->
+        <div class="section-title">
+            <div class="icon contract">📋</div> 合同层（三线并行）
+        </div>
+        <div class="layer-group">
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">IP线</span> 品牌与技术许可协议</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-2">品顺</div>
+                        <div class="flow-label">授权"寻味顺德/华桂园"品牌 + 配方</div>
+                    </div>
+                </div>
+            </div>
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">加工线</span> OEM代工合同</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-green">西江乳业</div>
+                    </div>
+                </div>
+            </div>
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">原料线</span> 生乳采购合同</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-3">大水牛供应链</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: GOODS -->
+        <div class="section-title">
+            <div class="icon goods">🚚</div> 物流层
+        </div>
+        <div class="layer-group">
+            <div class="layer-card goods-layer">
+                <h4><span class="layer-badge goods">实物流</span></h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight-3">大水牛</div>
+                    </div>
+                    <div class="flow-arrow goods-arrow">→ 🥛水牛奶 →</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-green">西江乳业</div>
+                        <div class="flow-label">+品顺配方技术指导</div>
+                    </div>
+                    <div class="flow-arrow goods-arrow">→ 📦成品 →</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食</div>
+                        <div class="flow-label">全渠道销售</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: MONEY -->
+        <div class="section-title">
+            <div class="icon money">💰</div> 资金层（三线独立支付）
+        </div>
+        <div class="layer-group">
+            <div class="layer-card money-layer">
+                <h4><span class="layer-badge money">资金流</span> 三笔独立付款</h4>
+                <div class="flow-steps" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                    <div class="flow-steps">
+                        <div class="flow-node highlight">顺好食</div>
+                        <div class="flow-arrow money-arrow">→ 品牌授权及技术研发费 →</div>
+                        <div class="flow-node highlight-2">品顺</div>
+                    </div>
+                    <div class="flow-steps">
+                        <div class="flow-node highlight">顺好食</div>
+                        <div class="flow-arrow money-arrow">→ 加工费 →</div>
+                        <div class="flow-node highlight-green">西江乳业</div>
+                    </div>
+                    <div class="flow-steps">
+                        <div class="flow-node highlight">顺好食</div>
+                        <div class="flow-arrow money-arrow">→ 原料费 →</div>
+                        <div class="flow-node highlight-3">大水牛</div>
+                    </div>
+                </div>
+                <div class="risk-callout">
+                    <span class="risk-icon">⚠️</span>
+                    <div><strong>核心风险：</strong>支付给品顺的品牌授权及技术研发费，有合规及国资内部审计的风险挑战。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCHEME 3 ==================== -->
+    <div class="tab-content" id="tab-3">
+        <div class="scheme-header" data-scheme="3">
+            <div class="scheme-number">03</div>
+            <div class="scheme-meta">
+                <h2>联合体销售模式</h2>
+                <div class="tagline">"同舟共济，后端分钱"</div>
+                <div class="core-logic">顺好食与品顺不进行直接买卖，而是成立联营项目组（虚拟或实体SPV），设立共管账户，对外统一发声，对内按协议分配净利润。</div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE OVERVIEW -->
+        <div class="section-title">
+            <div class="icon contract">🏗️</div> 交易架构总览
+        </div>
+        <div class="arch-diagram">
+            <div class="arch-canvas">
+                <div class="arch-entities">
+                    <div class="arch-entity e-jv" style="flex: 2; max-width: 320px;">
+                        <span class="emoji">🤝</span>
+                        <div class="ent-name">品顺-顺好食 联营项目组</div>
+                        <div class="ent-role">统一经营主体 · 共管账户/SPV</div>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:center; gap:40px; margin: 20px 0; flex-wrap:wrap;">
+                    <div class="arch-entity e-shs" style="min-width:130px; max-width:160px;">
+                        <span class="emoji">🎯</span>
+                        <div class="ent-name">顺好食</div>
+                        <div class="ent-role">运营方 · 分取运营利润</div>
+                    </div>
+                    <div class="arch-entity e-ps" style="min-width:130px; max-width:160px;">
+                        <span class="emoji">🏛️</span>
+                        <div class="ent-name">品顺</div>
+                        <div class="ent-role">IP方 · 分取品牌授权及技术研发收益</div>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:center; gap:40px; margin-top: 20px; flex-wrap:wrap;">
+                    <div class="arch-entity e-xj" style="min-width:130px; max-width:160px;">
+                        <span class="emoji">🏭</span>
+                        <div class="ent-name">西江乳业</div>
+                        <div class="ent-role">外部供应商</div>
+                    </div>
+                    <div class="arch-entity e-dsn" style="min-width:130px; max-width:160px;">
+                        <span class="emoji">🐃</span>
+                        <div class="ent-name">大水牛供应链</div>
+                        <div class="ent-role">外部供应商 · 甲方管理基金旗下子公司</div>
+                    </div>
+                </div>
+                <div class="connections-list" style="margin-top: 24px;">
+                    <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 顺好食 ↔ 品顺：签署《联营合作协议》设立共管账户
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 联营体 → 大水牛：统一采购奶源
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot contract"></div> 📄 联营体 → 西江：统一委托加工
+                    </div>
+                    <div class="conn-item">
+                        <div class="conn-dot money"></div> 💰 销售回款 → 共管账户 → 扣除硬性成本 → 净利润按比例分配
+                    </div>
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-line contract"></div> 合同/组织关系
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line goods"></div> 实物流
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line dashed"></div> 资金/利润流
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: CONTRACT -->
+        <div class="section-title">
+            <div class="icon contract">📋</div> 合同层
+        </div>
+        <div class="layer-group">
+            <div class="layer-card contract-layer">
+                <h4><span class="layer-badge contract">核心合同</span> 联营合作协议</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight">顺好食</div>
+                        <div class="flow-label">运营方</div>
+                    </div>
+                    <div class="flow-arrow contract-arrow">⟷ 共建联营体 ⟷</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-2">品顺</div>
+                        <div class="flow-label">IP方</div>
+                    </div>
+                </div>
+                <div class="insight-box purple">📌 约定利润分配比例：顺好食占大头（运营），品顺占小头（IP + 技术研发）</div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: GOODS -->
+        <div class="section-title">
+            <div class="icon goods">🚚</div> 物流层
+        </div>
+        <div class="layer-group">
+            <div class="layer-card goods-layer">
+                <h4><span class="layer-badge goods">供应链执行</span> 以联营体名义统一运营</h4>
+                <div class="flow-steps">
+                    <div class="flow-group">
+                        <div class="flow-node highlight-3">大水牛</div>
+                    </div>
+                    <div class="flow-arrow goods-arrow">→ 奶源 →</div>
+                    <div class="flow-group">
+                        <div class="flow-node highlight-green">西江乳业</div>
+                        <div class="flow-label">代工生产</div>
+                    </div>
+                    <div class="flow-arrow goods-arrow">→ 成品 →</div>
+                    <div class="flow-group">
+                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">联营体</div>
+                        <div class="flow-label">统一销售</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERED VIEW: MONEY (front-end + back-end) -->
+        <div class="section-title">
+            <div class="icon money">💰</div> 资金层（前端支出 + 后端分润）
+        </div>
+        <div class="layer-group">
+            <!-- FRONT-END: costs paid out from joint account -->
+            <div class="layer-card money-layer">
+                <h4><span class="layer-badge money">前端支出</span> 联营体共管账户统一支付供应链成本</h4>
+                <div class="flow-steps" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                    <div class="flow-steps">
+                        <div class="flow-node"
+                            style="border-color: var(--jv-color); color: var(--jv-color); font-weight:600;">共管账户</div>
+                        <div class="flow-arrow money-arrow">→ 原料采购款 →</div>
+                        <div class="flow-node highlight-3">大水牛供应链</div>
+                    </div>
+                    <div class="flow-steps">
+                        <div class="flow-node"
+                            style="border-color: var(--jv-color); color: var(--jv-color); font-weight:600;">共管账户</div>
+                        <div class="flow-arrow money-arrow">→ 加工费 →</div>
+                        <div class="flow-node highlight-green">西江乳业</div>
+                    </div>
+                    <div class="flow-steps">
+                        <div class="flow-node"
+                            style="border-color: var(--jv-color); color: var(--jv-color); font-weight:600;">共管账户</div>
+                        <div class="flow-arrow money-arrow">→ 物流费等 →</div>
+                        <div class="flow-node" style="border-color: var(--border); color: var(--text-muted);">物流及其他服务商
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- BACK-END: profit distribution -->
+            <div class="layer-card money-layer">
+                <h4><span class="layer-badge money">后端分润</span> 销售回款 → 扣除成本 → 净利润分配</h4>
+                <div class="flow-steps" style="flex-direction: column; align-items: flex-start; gap: 12px;">
+                    <div class="flow-steps">
+                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">销售回款</div>
+                        <div class="flow-arrow money-arrow">→</div>
+                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">共管账户</div>
+                        <div class="flow-arrow money-arrow">→ 扣除上述硬性成本 →</div>
+                        <div class="flow-node"
+                            style="border-color: var(--money-color); color: var(--money-color); font-weight:700;">净利润
+                        </div>
+                    </div>
+                    <div class="flow-steps">
+                        <div class="flow-node"
+                            style="border-color: var(--money-color); color: var(--money-color); font-weight:700;">净利润
+                        </div>
+                        <div class="flow-arrow money-arrow">→ 协议分红 →</div>
+                        <div class="flow-node highlight">顺好食（运营收益）</div>
+                    </div>
+                    <div class="flow-steps">
+                        <div class="flow-node"
+                            style="border-color: var(--money-color); color: var(--money-color); font-weight:700;">净利润
+                        </div>
+                        <div class="flow-arrow money-arrow">→ 协议分红 →</div>
+                        <div class="flow-node highlight-2">品顺（IP + 技术研发）</div>
+                    </div>
+                </div>
+                <div class="advantage-callout">
+                    <span class="adv-icon">✅</span>
+                    <div><strong>核心优势：</strong>无需争论IP费及技术研发费定多少钱（1块还是5毛），因为大家分的是最终净利润。</div>
+                </div>
+                <div class="risk-callout" style="margin-top: 10px;">
+                    <span class="risk-icon">⚠️</span>
+                    <div><strong>核心难点：</strong>国资与民企进行非股权关系的"联营分账"，在财务合规和税务处理上极其复杂，落地执行难度最大。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== COMPARISON ==================== -->
+    <div class="tab-content" id="tab-compare">
+        <div class="section-title">
+            <div class="icon contract">📊</div> 三方案全维度对比
+        </div>
+
+        <div class="compare-grid">
+            <!-- Headers -->
+            <div class="compare-cell header" style="background: var(--bg); border-bottom: 2px solid var(--border);">对比维度
+            </div>
+            <div class="compare-cell header header-1">方案一<br />总包甲供料</div>
+            <div class="compare-cell header header-2">方案二<br />品牌授权直采</div>
+            <div class="compare-cell header header-3">方案三<br />联合体销售</div>
+
+            <!-- Row: Core Logic -->
+            <div class="compare-cell dim-label">核心逻辑</div>
+            <div class="compare-cell">总包整合，甲供料锁定供应链<br />IP费及技术研发费隐形化</div>
+            <div class="compare-cell">三权分立，各自为政<br />透明显性交易</div>
+            <div class="compare-cell">同舟共济，后端分钱<br />利润共享</div>
+
+            <!-- Row: Contract Count -->
+            <div class="compare-cell dim-label">合同数量</div>
+            <div class="compare-cell">2份<br /><small style="color:var(--text-dim)">ODM类比合同 + 分包协议</small></div>
+            <div class="compare-cell">3份<br /><small style="color:var(--text-dim)">许可协议 + OEM + 采购</small></div>
+            <div class="compare-cell">1份（核心）+ 外部合同<br /><small style="color:var(--text-dim)">联营协议 + 供应链合同</small></div>
+
+            <!-- Row: Money Flow -->
+            <div class="compare-cell dim-label">资金流向</div>
+            <div class="compare-cell">顺好食→品顺（大额）→西江（合理加工费）<br /><strong>链式传递</strong></div>
+            <div class="compare-cell">
+                <div class="star-flow">
+                    <div class="star-center">顺好食（星型中心）</div>
+                    <div class="star-branches">
+                        <div class="star-branch">→ 品顺：授权及研发费</div>
+                        <div class="star-branch">→ 西江：加工费</div>
+                        <div class="star-branch">→ 大水牛：原料费</div>
+                    </div>
+                </div>
+                <strong>星型发散</strong>
+            </div>
+            <div class="compare-cell">销售回款→共管账户→扣成本→分利润<br /><strong>归集再分配</strong></div>
+
+            <!-- Row: IP Fee Treatment -->
+            <div class="compare-cell dim-label">IP费及技术研发费<br />处理方式</div>
+            <div class="compare-cell">隐形包含在采购单价中<br /><span class="tag low">✅ 不可见</span></div>
+            <div class="compare-cell">显性单独支付授权及技术研发费<br /><span class="tag high">⚠️ 高度可见</span></div>
+            <div class="compare-cell">无需定价，后端利润分配<br /><span class="tag low">✅ 自然消解</span></div>
+
+            <!-- Row: State-owned Revenue -->
+            <div class="compare-cell dim-label">国资营收表现</div>
+            <div class="compare-cell">品顺确认全额营收<br /><span class="tag low">✅ 流水充足</span></div>
+            <div class="compare-cell">品顺仅确认授权及技术研发费收入<br /><span class="tag mid">⚠️ 流水较小</span></div>
+            <div class="compare-cell">按利润分配比例确认收入<br /><span class="tag mid">⚠️ 依赖销售</span></div>
+
+            <!-- Row: Supply Chain Control -->
+            <div class="compare-cell dim-label">顺好食控货权</div>
+            <div class="compare-cell">通过甲供料条款控制原料<br /><span class="tag low">✅ 实质控制</span></div>
+            <div class="compare-cell">直接签约所有环节<br /><span class="tag low">✅ 完全控制</span></div>
+            <div class="compare-cell">通过联营体共同决策<br /><span class="tag mid">⚠️ 需协商</span></div>
+
+            <!-- Row: Compliance Risk -->
+            <div class="compare-cell dim-label">合规风险</div>
+            <div class="compare-cell">中等：需解释总包利润率合理性<br /><span class="tag mid">中</span></div>
+            <div class="compare-cell">有合规及国资内部审计的风险挑战<br /><span class="tag high">高</span></div>
+            <div class="compare-cell">国资民企联营分账复杂<br /><span class="tag high">高</span></div>
+
+            <!-- Row: Implementation Difficulty -->
+            <div class="compare-cell dim-label">落地难度</div>
+            <div class="compare-cell">较低：有腊味ODM合同先例<br /><span class="tag low">★★☆☆☆</span></div>
+            <div class="compare-cell">较低：传统模式，操作简单<br /><span class="tag low">★★☆☆☆</span></div>
+            <div class="compare-cell">最高：SPV设立+税务+国资审批<br /><span class="tag high">★★★★★</span></div>
+        </div>
+
+        <!-- RECOMMENDATION -->
+        <div class="recommendation">
+            <div class="rec-icon">💡</div>
+            <div>
+                <h4>综合建议</h4>
+                <p><strong>方案一（总包甲供料）</strong>逻辑最闭环——既解决了国资要流水的"面子"，又解决了顺好食控货的"里子"，同时规避了IP及技术研发费定价的敏感性。且有腊味ODM合同作为操作先例，落地阻力最小。
+                </p>
+                <p style="margin-top: 8px;">
+                    <strong>方案二</strong>简单直接，适合作为谈判初期的"明牌方案"，但IP及技术研发费定价存在合规风险挑战。<strong>方案三</strong>利益绑定最深、理论上最公平，但国资民企联营在财务合规和税务处理上极其复杂。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === PASSWORD LOGIC ===
+        const CORRECT_PASSWORD = "8888";
+
+        function checkPassword() {
+            const input = document.getElementById("passwordInput");
+            const errMsg = document.getElementById("errMsg");
+
+            if (input.value === CORRECT_PASSWORD) {
+                document.getElementById("lockScreen").style.opacity = 0;
+                setTimeout(() => {
+                    document.getElementById("lockScreen").style.display = "none";
+                    document.body.classList.remove("locked");
+                }, 500);
+            } else {
+                errMsg.style.opacity = 1;
+                input.classList.add("shake-effect"); // Could add shake animation
+                setTimeout(() => {
+                    errMsg.style.opacity = 0;
+                }, 2000);
+            }
+        }
+        document.getElementById("passwordInput").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") checkPassword();
+        });
+
+        // === ORIGINAL LOGIC ===
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            window.scrollTo({ top: 200, behavior: 'smooth' });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains("locked")) return; // Disable keys when locked
+            const tabs = ['1', '2', '3', 'compare'];
+            const currentBtn = document.querySelector('.tab-btn.active');
+            const currentIdx = tabs.indexOf(currentBtn.dataset.tab);
+            if (e.key === 'ArrowRight' && currentIdx < tabs.length - 1) switchTab(tabs[currentIdx + 1]);
+            else if (e.key === 'ArrowLeft' && currentIdx > 0) switchTab(tabs[currentIdx - 1]);
+        });
+    </script>
+</body>
+
+</html>
