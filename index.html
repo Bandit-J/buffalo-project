@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>水牛奶产业协作 · 三方案交易架构</title>
+    <title>水牛奶产业协作 · 两方案交易架构</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Playfair+Display:wght@700;900&display=swap"
         rel="stylesheet">
@@ -935,8 +935,7 @@
     <div class="tab-nav">
         <button class="tab-btn active" data-tab="1" onclick="switchTab('1')">方案一 · 总包甲供料</button>
         <button class="tab-btn" data-tab="2" onclick="switchTab('2')">方案二 · 品牌授权直采</button>
-        <button class="tab-btn" data-tab="3" onclick="switchTab('3')">方案三 · 联合体销售</button>
-        <button class="tab-btn" data-tab="compare" onclick="switchTab('compare')">📊 三方案对比</button>
+        <button class="tab-btn" data-tab="compare" onclick="switchTab('compare')">📊 两方案对比</button>
     </div>
 
     <!-- ==================== SCHEME 1 ==================== -->
@@ -1140,6 +1139,17 @@
                 </div>
             </div>
         </div>
+
+        <!-- NOTE: Pinshun C-end Rights -->
+        <div class="section-title"><div class="icon contract">📝</div> 备注</div>
+        <div class="layer-group">
+            <div class="layer-card" style="padding:18px 22px; border-left: 4px solid var(--accent-2); background: var(--accent-2-dim);">
+                <div style="display:flex; align-items:flex-start; gap:10px; font-size:0.84rem; color:var(--accent-2);">
+                    <span style="font-size:1rem; flex-shrink:0;">🏛️</span>
+                    <div><strong>品顺C端销售权保留：</strong>在本方案框架下，品顺（国资/IP方）将保留拥有向C端消费者直接销售的权利。该权利应在总包合同中予以明确约定，以保障品顺作为品牌持有方的市场权益。</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ==================== SCHEME 2 ==================== -->
@@ -1320,226 +1330,14 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- ==================== SCHEME 3 ==================== -->
-    <div class="tab-content" id="tab-3">
-        <div class="scheme-header" data-scheme="3">
-            <div class="scheme-number">03</div>
-            <div class="scheme-meta">
-                <h2>联合体销售模式</h2>
-                <div class="tagline">"同舟共济，后端分钱"</div>
-                <div class="core-logic">顺好食与品顺不进行直接买卖，而是成立联营项目组（虚拟或实体SPV），设立共管账户，对外统一发声，对内按协议分配净利润。</div>
-            </div>
-        </div>
-
-        <!-- ARCHITECTURE OVERVIEW -->
-        <div class="section-title">
-            <div class="icon contract">🏗️</div> 交易架构总览
-        </div>
-        <div class="arch-diagram">
-            <div class="arch-canvas">
-                <div class="arch-entities">
-                    <div class="arch-entity e-jv" style="flex: 2; max-width: 320px;">
-                        <span class="emoji">🤝</span>
-                        <div class="ent-name">品顺-顺好食 联营项目组</div>
-                        <div class="ent-role">统一经营主体 · 共管账户/SPV</div>
-                    </div>
-                </div>
-                <div style="display:flex; justify-content:center; gap:40px; margin: 20px 0; flex-wrap:wrap;">
-                    <div class="arch-entity e-shs" style="min-width:130px; max-width:160px;">
-                        <span class="emoji">🎯</span>
-                        <div class="ent-name">顺好食</div>
-                        <div class="ent-role">运营方 · 分取运营利润</div>
-                    </div>
-                    <div class="arch-entity e-ps" style="min-width:130px; max-width:160px;">
-                        <span class="emoji">🏛️</span>
-                        <div class="ent-name">品顺</div>
-                        <div class="ent-role">IP方 · 分取品牌授权及技术研发收益</div>
-                    </div>
-                </div>
-                <div style="display:flex; justify-content:center; gap:40px; margin-top: 20px; flex-wrap:wrap;">
-                    <div class="arch-entity e-xj" style="min-width:130px; max-width:160px;">
-                        <span class="emoji">🏭</span>
-                        <div class="ent-name">西江乳业</div>
-                        <div class="ent-role">外部供应商</div>
-                    </div>
-                    <div class="arch-entity e-dsn" style="min-width:130px; max-width:160px;">
-                        <span class="emoji">🐃</span>
-                        <div class="ent-name">大水牛供应链</div>
-                        <div class="ent-role">外部供应商 · 甲方管理基金旗下子公司</div>
-                    </div>
-                </div>
-                <div class="connections-list" style="margin-top: 24px;">
-                    <div class="conn-item">
-                        <div class="conn-dot contract"></div> 📄 顺好食 ↔ 品顺：签署《联营合作协议》设立共管账户
-                    </div>
-                    <div class="conn-item">
-                        <div class="conn-dot contract"></div> 📄 联营体 → 大水牛：统一采购奶源
-                    </div>
-                    <div class="conn-item">
-                        <div class="conn-dot contract"></div> 📄 联营体 → 西江：统一委托加工
-                    </div>
-                    <div class="conn-item">
-                        <div class="conn-dot money"></div> 💰 销售回款 → 共管账户 → 扣除硬性成本 → 净利润按比例分配
-                    </div>
-                </div>
-            </div>
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-line contract"></div> 合同/组织关系
-                </div>
-                <div class="legend-item">
-                    <div class="legend-line goods"></div> 实物流
-                </div>
-                <div class="legend-item">
-                    <div class="legend-line dashed"></div> 资金/利润流
-                </div>
-            </div>
-        </div>
-
-        <!-- LAYERED VIEW: CONTRACT -->
-        <div class="section-title">
-            <div class="icon contract">📋</div> 合同层
-        </div>
+        <!-- NOTE: Pinshun C-end Rights -->
+        <div class="section-title"><div class="icon contract">📝</div> 备注</div>
         <div class="layer-group">
-            <div class="layer-card contract-layer">
-                <h4><span class="layer-badge contract">核心合同</span> 联营合作协议</h4>
-                <div class="flow-steps">
-                    <div class="flow-group">
-                        <div class="flow-node highlight">顺好食</div>
-                        <div class="flow-label">运营方</div>
-                    </div>
-                    <div class="flow-arrow contract-arrow">⟷ 共建联营体 ⟷</div>
-                    <div class="flow-group">
-                        <div class="flow-node highlight-2">品顺</div>
-                        <div class="flow-label">IP方</div>
-                    </div>
-                </div>
-                <div class="insight-box purple">📌 约定利润分配比例：顺好食占大头（运营），品顺占小头（IP + 技术研发）</div>
-            </div>
-            <div class="layer-card contract-layer">
-                <h4><span class="layer-badge contract">供应链合同 ①</span> 生乳采购合同</h4>
-                <div class="flow-steps">
-                    <div class="flow-group">
-                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">联营体（品顺-顺好食）</div>
-                        <div class="flow-label">采购方</div>
-                    </div>
-                    <div class="flow-arrow contract-arrow">⟷</div>
-                    <div class="flow-group">
-                        <div class="flow-node highlight-3">大水牛供应链</div>
-                        <div class="flow-label">原料供应方</div>
-                    </div>
-                </div>
-                <div class="insight-box">📌 以联营体名义统一向大水牛供应链采购福润/恩平/遂溪牧场奶源</div>
-            </div>
-            <div class="layer-card contract-layer">
-                <h4><span class="layer-badge contract">供应链合同 ②</span> 委托加工合同</h4>
-                <div class="flow-steps">
-                    <div class="flow-group">
-                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">联营体（品顺-顺好食）</div>
-                        <div class="flow-label">委托方</div>
-                    </div>
-                    <div class="flow-arrow contract-arrow">⟷</div>
-                    <div class="flow-group">
-                        <div class="flow-node highlight-green">西江乳业</div>
-                        <div class="flow-label">代工方</div>
-                    </div>
-                </div>
-                <div class="insight-box">📌 以联营体名义统一委托西江乳业进行双皮奶/水牛乳酪的OEM代工生产</div>
-            </div>
-        </div>
-
-        <!-- LAYERED VIEW: GOODS -->
-        <div class="section-title">
-            <div class="icon goods">🚚</div> 物流层
-        </div>
-        <div class="layer-group">
-            <div class="layer-card goods-layer">
-                <h4><span class="layer-badge goods">供应链执行</span> 以联营体名义统一运营</h4>
-                <div class="flow-steps">
-                    <div class="flow-group">
-                        <div class="flow-node highlight-3">大水牛</div>
-                    </div>
-                    <div class="flow-arrow goods-arrow">→ 奶源 →</div>
-                    <div class="flow-group">
-                        <div class="flow-node highlight-green">西江乳业</div>
-                        <div class="flow-label">代工生产</div>
-                    </div>
-                    <div class="flow-arrow goods-arrow">→ 成品 →</div>
-                    <div class="flow-group">
-                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">联营体</div>
-                        <div class="flow-label">统一销售</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- LAYERED VIEW: MONEY (front-end + back-end) -->
-        <div class="section-title">
-            <div class="icon money">💰</div> 资金层（前端支出 + 后端分润）
-        </div>
-        <div class="layer-group">
-            <!-- FRONT-END: costs paid out from joint account -->
-            <div class="layer-card money-layer">
-                <h4><span class="layer-badge money">前端支出</span> 联营体共管账户统一支付供应链成本</h4>
-                <div class="flow-steps" style="flex-direction: column; align-items: flex-start; gap: 10px;">
-                    <div class="flow-steps">
-                        <div class="flow-node"
-                            style="border-color: var(--jv-color); color: var(--jv-color); font-weight:600;">共管账户</div>
-                        <div class="flow-arrow money-arrow">→ 原料采购款 →</div>
-                        <div class="flow-node highlight-3">大水牛供应链</div>
-                    </div>
-                    <div class="flow-steps">
-                        <div class="flow-node"
-                            style="border-color: var(--jv-color); color: var(--jv-color); font-weight:600;">共管账户</div>
-                        <div class="flow-arrow money-arrow">→ 加工费 →</div>
-                        <div class="flow-node highlight-green">西江乳业</div>
-                    </div>
-                    <div class="flow-steps">
-                        <div class="flow-node"
-                            style="border-color: var(--jv-color); color: var(--jv-color); font-weight:600;">共管账户</div>
-                        <div class="flow-arrow money-arrow">→ 物流费等 →</div>
-                        <div class="flow-node" style="border-color: var(--border); color: var(--text-muted);">物流及其他服务商
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- BACK-END: profit distribution -->
-            <div class="layer-card money-layer">
-                <h4><span class="layer-badge money">后端分润</span> 销售回款 → 扣除成本 → 净利润分配</h4>
-                <div class="flow-steps" style="flex-direction: column; align-items: flex-start; gap: 12px;">
-                    <div class="flow-steps">
-                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">销售回款</div>
-                        <div class="flow-arrow money-arrow">→</div>
-                        <div class="flow-node" style="border-color: var(--jv-color); color: var(--jv-color);">共管账户</div>
-                        <div class="flow-arrow money-arrow">→ 扣除上述硬性成本 →</div>
-                        <div class="flow-node"
-                            style="border-color: var(--money-color); color: var(--money-color); font-weight:700;">净利润
-                        </div>
-                    </div>
-                    <div class="flow-steps">
-                        <div class="flow-node"
-                            style="border-color: var(--money-color); color: var(--money-color); font-weight:700;">净利润
-                        </div>
-                        <div class="flow-arrow money-arrow">→ 协议分红 →</div>
-                        <div class="flow-node highlight">顺好食（运营收益）</div>
-                    </div>
-                    <div class="flow-steps">
-                        <div class="flow-node"
-                            style="border-color: var(--money-color); color: var(--money-color); font-weight:700;">净利润
-                        </div>
-                        <div class="flow-arrow money-arrow">→ 协议分红 →</div>
-                        <div class="flow-node highlight-2">品顺（IP + 技术研发）</div>
-                    </div>
-                </div>
-                <div class="advantage-callout">
-                    <span class="adv-icon">✅</span>
-                    <div><strong>核心优势：</strong>无需争论IP费及技术研发费定多少钱（1块还是5毛），因为大家分的是最终净利润。</div>
-                </div>
-                <div class="risk-callout" style="margin-top: 10px;">
-                    <span class="risk-icon">⚠️</span>
-                    <div><strong>核心难点：</strong>国资与民企进行非股权关系的"联营分账"，在财务合规和税务处理上极其复杂，落地执行难度最大。</div>
+            <div class="layer-card" style="padding:18px 22px; border-left: 4px solid var(--accent-2); background: var(--accent-2-dim);">
+                <div style="display:flex; align-items:flex-start; gap:10px; font-size:0.84rem; color:var(--accent-2);">
+                    <span style="font-size:1rem; flex-shrink:0;">🏛️</span>
+                    <div><strong>品顺C端销售权保留：</strong>在本方案框架下，品顺（国资/IP方）将保留拥有向C端消费者直接销售的权利。该权利应在品牌与技术许可协议中予以明确约定，以保障品顺作为品牌持有方的市场权益。</div>
                 </div>
             </div>
         </div>
@@ -1548,28 +1346,25 @@
     <!-- ==================== COMPARISON ==================== -->
     <div class="tab-content" id="tab-compare">
         <div class="section-title">
-            <div class="icon contract">📊</div> 三方案全维度对比
+            <div class="icon contract">📊</div> 两方案全维度对比
         </div>
 
-        <div class="compare-grid">
+        <div class="compare-grid" style="grid-template-columns: 180px 1fr 1fr;">
             <!-- Headers -->
             <div class="compare-cell header" style="background: var(--bg); border-bottom: 2px solid var(--border);">对比维度
             </div>
             <div class="compare-cell header header-1">方案一<br />总包甲供料</div>
             <div class="compare-cell header header-2">方案二<br />品牌授权直采</div>
-            <div class="compare-cell header header-3">方案三<br />联合体销售</div>
 
             <!-- Row: Core Logic -->
             <div class="compare-cell dim-label">核心逻辑</div>
             <div class="compare-cell">总包整合，甲供料锁定供应链<br />IP费及技术研发费隐形化</div>
             <div class="compare-cell">三权分立，各自为政<br />透明显性交易</div>
-            <div class="compare-cell">同舟共济，后端分钱<br />利润共享</div>
 
             <!-- Row: Contract Count -->
             <div class="compare-cell dim-label">合同数量</div>
             <div class="compare-cell">3份<br /><small style="color:var(--text-dim)">ODM类比合同 + 分包协议 + 原料采购协议</small></div>
             <div class="compare-cell">3份<br /><small style="color:var(--text-dim)">许可协议 + OEM + 采购</small></div>
-            <div class="compare-cell">3份<br /><small style="color:var(--text-dim)">联营协议 + 生乳采购合同 + 委托加工合同</small></div>
 
             <!-- Row: Contract & Signing Parties -->
             <div class="compare-cell dim-label">合同与签约主体</div>
@@ -1593,16 +1388,6 @@
                     <small style="color:var(--text-dim);">《生乳采购合同》</small>
                 </div>
             </div>
-            <div class="compare-cell">
-                <div style="font-size:0.78rem; line-height:1.8;">
-                    <strong style="color:var(--contract-color);">合同①</strong> 顺好食 ↔ 品顺<br />
-                    <small style="color:var(--text-dim);">《联营合作协议》</small><br />
-                    <strong style="color:var(--contract-color);">合同②</strong> 联营体 ↔ 大水牛<br />
-                    <small style="color:var(--text-dim);">《生乳采购合同》</small><br />
-                    <strong style="color:var(--contract-color);">合同③</strong> 联营体 ↔ 西江乳业<br />
-                    <small style="color:var(--text-dim);">《委托加工合同》</small>
-                </div>
-            </div>
 
             <!-- Row: Money Flow -->
             <div class="compare-cell dim-label">资金流向</div>
@@ -1618,37 +1403,36 @@
                 </div>
                 <strong>星型发散</strong>
             </div>
-            <div class="compare-cell">销售回款→共管账户→扣成本→分利润<br /><strong>归集再分配</strong></div>
 
             <!-- Row: IP Fee Treatment -->
             <div class="compare-cell dim-label">IP费及技术研发费<br />处理方式</div>
             <div class="compare-cell">隐形包含在采购单价中<br /><span class="tag low">✅ 不可见</span></div>
             <div class="compare-cell">显性单独支付授权及技术研发费<br /><span class="tag high">⚠️ 高度可见</span></div>
-            <div class="compare-cell">无需定价，后端利润分配<br /><span class="tag low">✅ 自然消解</span></div>
 
             <!-- Row: State-owned Revenue -->
             <div class="compare-cell dim-label">国资营收表现</div>
             <div class="compare-cell">品顺确认全额营收<br /><span class="tag low">✅ 流水充足</span></div>
             <div class="compare-cell">品顺仅确认授权及技术研发费收入<br /><span class="tag mid">⚠️ 流水较小</span></div>
-            <div class="compare-cell">按利润分配比例确认收入<br /><span class="tag mid">⚠️ 依赖销售</span></div>
 
             <!-- Row: Supply Chain Control -->
             <div class="compare-cell dim-label">顺好食控货权</div>
             <div class="compare-cell">通过甲供料条款控制原料<br /><span class="tag low">✅ 实质控制</span></div>
             <div class="compare-cell">直接签约所有环节<br /><span class="tag low">✅ 完全控制</span></div>
-            <div class="compare-cell">通过联营体共同决策<br /><span class="tag mid">⚠️ 需协商</span></div>
 
             <!-- Row: Compliance Risk -->
             <div class="compare-cell dim-label">合规风险</div>
             <div class="compare-cell">中等：需解释总包利润率合理性<br /><span class="tag mid">中</span></div>
             <div class="compare-cell">有合规及国资内部审计的风险挑战<br /><span class="tag high">高</span></div>
-            <div class="compare-cell">国资民企联营分账复杂<br /><span class="tag high">高</span></div>
 
             <!-- Row: Implementation Difficulty -->
             <div class="compare-cell dim-label">落地难度</div>
             <div class="compare-cell">较低：有腊味ODM合同先例<br /><span class="tag low">★★☆☆☆</span></div>
             <div class="compare-cell">较低：传统模式，操作简单<br /><span class="tag low">★★☆☆☆</span></div>
-            <div class="compare-cell">最高：SPV设立+税务+国资审批<br /><span class="tag high">★★★★★</span></div>
+
+            <!-- Row: Pinshun C-end Rights -->
+            <div class="compare-cell dim-label">品顺C端销售权</div>
+            <div class="compare-cell">品顺作为名义总包方，保留自行向C端销售的权利<br /><span class="tag mid">📌 合同约定</span></div>
+            <div class="compare-cell">品顺作为IP授权方，保留自行向C端销售的权利<br /><span class="tag mid">📌 协议约定</span></div>
         </div>
 
         <!-- RECOMMENDATION -->
@@ -1659,7 +1443,7 @@
                 <p><strong>方案一（总包甲供料）</strong>逻辑最闭环——既解决了国资要流水的"面子"，又解决了顺好食控货的"里子"，同时规避了IP及技术研发费定价的敏感性。且有腊味ODM合同作为操作先例，落地阻力最小。
                 </p>
                 <p style="margin-top: 8px;">
-                    <strong>方案二</strong>简单直接，适合作为谈判初期的"明牌方案"，但IP及技术研发费定价存在合规风险挑战。<strong>方案三</strong>利益绑定最深、理论上最公平，但国资民企联营在财务合规和税务处理上极其复杂。
+                    <strong>方案二（品牌授权直采）</strong>简单直接，适合作为谈判初期的"明牌方案"，但IP及技术研发费定价存在合规风险挑战。
                 </p>
             </div>
         </div>
@@ -1701,7 +1485,7 @@
         }
         document.addEventListener('keydown', (e) => {
             if (document.body.classList.contains("locked")) return; // Disable keys when locked
-            const tabs = ['1', '2', '3', 'compare'];
+            const tabs = ['1', '2', 'compare'];
             const currentBtn = document.querySelector('.tab-btn.active');
             const currentIdx = tabs.indexOf(currentBtn.dataset.tab);
             if (e.key === 'ArrowRight' && currentIdx < tabs.length - 1) switchTab(tabs[currentIdx + 1]);
